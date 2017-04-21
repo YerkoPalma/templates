@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "test": "standard --verbose | snazzy",
-    "start": "budo index.js --open --verbose --pushstate --host 0.0.0.0 --port 8080 --",
+    "start": "budo index.js:bundle.js --open --verbose --pushstate --host 0.0.0.0 --port 8080 --",
     "build": "NODE_ENV=production browserify -e index.js -o bundle.js -t sheetify/transform -g uglifyify | uglifyjs"
   },
   "repository": "{{USERNAME}}/{{PROJECTNAME}}",
