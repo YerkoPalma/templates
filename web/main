@@ -86,9 +86,7 @@ echo "$pkg" > package.json
 
 npm install -S \
   bel \
-  singleton-router \
-  tachyons \
-  sheetify
+  singleton-router
 
 npm install -D \
   standard \

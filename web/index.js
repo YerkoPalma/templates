@@ -1,8 +1,6 @@
 var Router = require('singleton-router')
-var sf = require('sheetify')
 var html = require('bel')
 
-sf('tachyons', { global: true })
 var router = Router()
 
 router.addRoute('/', mainView)
