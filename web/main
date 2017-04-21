@@ -67,11 +67,6 @@ else
 fi
 keywords="$(parse_keywords "$KEYWORDS")"
 
-readf "$__dirname/index.html" \
-  | replace 'DESCRIPTION' "$DESCRIPTION" \
-  | replace 'USERNAME' "$USERNAME" \
-  > index.html
-
 readf "$__dirname/index.js" > index.js
 
 readf "$__dirname/package.json" \
@@ -86,14 +81,16 @@ echo "$pkg" > package.json
 
 npm install -S \
   bel \
-  singleton-router
+  singleton-router \
+  tachyons \
+  sheetify
 
 npm install -D \
   standard \
   snazzy \
   uglifyify \
   uglifyjs \
-  budo
+  bankai
 
 git add .
 git commit -m "init"
