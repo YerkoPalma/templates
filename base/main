@@ -52,6 +52,6 @@ readf "$__dirname/readme.md" \
 copy "$__dirname/_gitignore" ".gitignore"
 
 year=$(date +"%Y")
-legit -l mit -u "Yerko Palma" -y "$year"
+legit put -u "Yerko Palma" -y "$year"  mit
 
 git init
