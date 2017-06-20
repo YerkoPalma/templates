@@ -18,7 +18,7 @@ $ savior node my-module
 
 - [ ] pwa template.
 - [ ] electron template.
-- [ ] full stack template.
+- [x] full stack template.
 
 ## License
 [MIT](/license)
