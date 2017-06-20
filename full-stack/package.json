@@ -1,0 +1,14 @@
+{
+  "name": "{{PROJECTNAME}}",
+  "version": "1.0.0",
+  "description": "{{DESCRIPTION}}",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard --verbose | snazzy && ENV=test tape 'tests/**/*.js' | tap-summary",
+    "start": "node index.js",
+    "build": "ENV=production bankai build --verbose --assets=assets --js [ --transform envify ] src/index.js public/"
+  },
+  "author": "{{USERNAME}}",
+  "repository": "{{USERNAME}}/{{PROJECTNAME}}",
+  "license": "MIT"
+}
