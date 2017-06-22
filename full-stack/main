@@ -102,6 +102,7 @@ npm install -S \
   redux \
   singleton-router \
   tachyons \
+  cookie-cutter \
   sheetify
 
 npm install -D \
