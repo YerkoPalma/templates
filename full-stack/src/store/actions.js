@@ -1,4 +1,5 @@
 var http = require('http')
+var cookie = require('cookie-cutter')
 
 function getAllPosts (store) {
   var posts = []
@@ -24,7 +25,16 @@ module.exports = {
 }
 
 function makeRequest (method, route, data, cb) {
-  var req = http.request({ method: method, path: route, headers: {'Content-Type': 'application/json'} }, function (res) {
+  var headers = {'Content-Type': 'application/json'}
+  if (cookie.get('token')) headers = Object.assign(headers, {'x-session-token': cookie.get('token')})
+  var req = http.request({ method: method, path: route, headers: headers }, function (res) {
+    if (res.headers && res.headers['x-session-token']) {
+      if (res.headers['timeout']) {
+        cookie.set('token', res.headers['x-session-token'], { expires: res.headers['timeout'] })
+      } else {
+        cookie.set('token', res.headers['x-session-token'])
+      }
+    }
     res.on('error', function (err) {
       // t.error(err)
       throw err
