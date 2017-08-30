@@ -1,0 +1,5 @@
+[ ! -d /usr/local/bin ] && echo "/usr/local/bin does not exist" && exit 1
+[ ! -O /usr/local/bin ] && SUDO_MAYBE=sudo
+$SUDO_MAYBE mkdir -p /home/.templates
+$SUDO_MAYBE git clone -q https://github.com/YerkoPalma/templates.git /home/.templates
+export TEMPLATES=/home/.templates

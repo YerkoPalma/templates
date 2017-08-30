@@ -9,6 +9,12 @@ templates
 $ savior node my-module
 ```
 
+## Install
+
+```bash
+$ curl -fs https://raw.githubusercontent.com/YerkoPalma/templates/master/install | sh
+```
+
 ## Requisites
 
 - [jq][jq]: For keywords parsing.
