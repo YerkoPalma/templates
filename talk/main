@@ -1,0 +1,125 @@
+#!/bin/sh
+
+__dirname=$(dirname "$(readlink -f "$0")")
+. "$(readlink -f "$__dirname/../shared.sh")"
+
+parse_keywords () {
+  keywords="$1"
+  keywords="$(echo "$keywords" | sed 's/,/ /g' | sed 's/  / /g' | tr ' ' '\n')"
+  str=""
+  for f in $keywords; do
+    str="$str\"$f\","
+  done
+
+  keywords="$str"
+  keywords="$(echo "$keywords" | sed '$ s/,$//' | sed 's/,/, /' | tr ' ' '\n')"
+  keywords="$(printf '[\n%s\n]\n' "$keywords")"
+  keywords="$(printf '{\nkeywords: %s\n}' "$keywords")"
+  echo "$keywords"
+}
+
+# define PROJECTNAME
+if [ -z "$1" ]; then
+  printf 'What is the name of the talk?\n❯ '
+  read -r PROJECTNAME
+  if [ "$PROJECTNAME" = "" ]; then
+    printf 'no name provided, exiting\n'
+    exit 1
+  fi
+else
+  PROJECTNAME="$1"
+fi
+
+# define DESCRIPTION
+if [ -z "$2" ]; then
+  printf 'What does this talk is about?\n❯ '
+  read -r DESCRIPTION
+  if [ "$DESCRIPTION" = "" ]; then
+    printf 'no description provided, exiting\n'
+    exit 1
+  fi
+else
+  DESCRIPTION="$2"
+fi
+
+# define USERNAME
+if [ -z "$3" ]; then
+  printf 'Under what user on GitHub will this project live?\n❯ '
+  read -r USERNAME
+  if [ "$USERNAME" = "" ]; then
+    printf 'no username provided, exiting\n'
+    exit 1
+  fi
+else
+  USERNAME="$3"
+fi
+
+# create base project
+savior base "$PROJECTNAME" "$DESCRIPTION" "$USERNAME"
+cd "$PROJECTNAME" || exit 1
+
+# define KEYWORDS
+if [ -z "$4" ]; then
+  printf 'What keywords should we include?\n❯ '
+  read -r KEYWORDS
+else
+  KEYWORDS="$4"
+fi
+keywords="$(parse_keywords "$KEYWORDS")"
+
+readf "$__dirname/index.js" > index.js
+
+readf "$__dirname/package.json" \
+  | replace 'PROJECTNAME' "$PROJECTNAME" \
+  | replace 'DESCRIPTION' "$DESCRIPTION" \
+  | replace 'USERNAME' "$USERNAME" \
+  > package.json
+
+pkg="$(cat package.json)"
+pkg="$(echo "$pkg" | jq ". + $keywords")"
+echo "$pkg" > package.json
+
+# copy bin.js
+readf "$__dirname/bin.js" > bin.js
+
+# copy service worker
+readf "$__dirname/sw.js" > sw.js
+
+# copy manifest
+readf "$__dirname/manifest.json" \
+  | replace 'PROJECTNAME' "$PROJECTNAME" \
+  | replace 'DESCRIPTION' "$DESCRIPTION" \
+  > manifest.json
+
+# copy choo folders (lib, views, stores, slides)
+cp -rf "$__dirname/assets" assets
+cp -rf "$__dirname/lib" lib
+cp -rf "$__dirname/views" views
+cp -rf "$__dirname/stores" stores
+
+npm install -S \
+  choo \
+  choo-service-worker \
+  choo-tts \
+  dat-node \
+  hammerjs \
+  highlight-syntax \
+  highlight-syntax-pastel \
+  markdown-it \
+  markdown-it-emoji \
+  markdown-it-meta \
+  minimist \
+  rimraf \
+  twemoji \
+  tachyons \
+  sheetify
+
+npm install -D \
+  standard \
+  choo-devtools \
+  dependency-check \
+  snazzy \
+  bankai
+
+git add .
+git commit -m "init"

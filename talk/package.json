@@ -1,0 +1,18 @@
+{
+  "name": "{{PROJECTNAME}}",
+  "description": "{{DESCRIPTION}}",
+  "author": "{{USERNAME}}",
+  "version": "0.1.0",
+  "main": "index.js",
+  "private": true,
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "test": "standard --verbose | snazzy",
+    "start": "node bin.js --dev",
+    "build": "node bin.js"
+  },
+  "repository": "{{USERNAME}}/{{PROJECTNAME}}",
+  "license": "MIT"
+}
