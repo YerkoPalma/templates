@@ -20,7 +20,7 @@ var defaultRender = function (tokens, idx, options, env, self) {
 function paragraph_open (tokens, idx, options, env, self) { // eslint-disable-line camelcase
   var aIndex = tokens[idx].attrIndex('class')
   if (aIndex < 0) {
-    tokens[idx].attrPush(['class', 'f3 f2-ns lh-copy georgia mv0'])
+    tokens[idx].attrPush(['class', 'f4 f2-ns lh-copy georgia mv0'])
   } else {
     tokens[idx].attrs[aIndex][1] = 'f4 f2-ns lh-copy georgia mv0'
   }
@@ -29,7 +29,7 @@ function paragraph_open (tokens, idx, options, env, self) { // eslint-disable-li
 function list_item_open (tokens, idx, options, env, self) { // eslint-disable-line camelcase
   var aIndex = tokens[idx].attrIndex('class')
   if (aIndex < 0) {
-    tokens[idx].attrPush(['class', 'f3 f2-ns lh-copy georgia'])
+    tokens[idx].attrPush(['class', 'f4 f2-ns lh-copy georgia'])
   } else {
     tokens[idx].attrs[aIndex][1] = 'f4 f2-ns lh-copy georgia'
   }
@@ -56,9 +56,9 @@ function blockquote_open (tokens, idx, options, env, self) { // eslint-disable-l
 function image (tokens, idx, options, env, self) { // eslint-disable-line camelcase
   var aIndex = tokens[idx].attrIndex('class')
   if (aIndex < 0) {
-    tokens[idx].attrPush(['class', 'mw-100 w-50 db center'])
+    tokens[idx].attrPush(['class', 'mw-100 w-50-ns w-100 db center'])
   } else {
-    tokens[idx].attrs[aIndex][1] = 'mw-100 w-50 db center'
+    tokens[idx].attrs[aIndex][1] = 'mw-100 w-50-ns w-100 db center'
   }
   return defaultRender(tokens, idx, options, env, self)
 }
@@ -97,19 +97,19 @@ function fence (tokens, idx, options, env, self) { // eslint-disable-line camelc
       attrs: tmpAttrs
     }
 
-    return '<pre class="near-white bg-mid-gray pa3"><code' + self.renderAttrs(tmpToken) + '>' +
+    return '<pre class="near-white bg-mid-gray overflow-x-visible-ns overflow-x-scroll pa3"><code' + self.renderAttrs(tmpToken) + '>' +
            highlighted +
           '</code></pre>\n'
   }
 
-  return '<pre class="near-white bg-mid-gray pa3"><code' + self.renderAttrs(token) + '>' +
+  return '<pre class="near-white bg-mid-gray overflow-x-visible-ns overflow-x-scroll pa3"><code' + self.renderAttrs(token) + '>' +
       highlighted +
       '</code></pre>\n'
 }
 function heading_open (tokens, idx, options, env, self) { // eslint-disable-line camelcase
   var aIndex = tokens[idx].attrIndex('class')
   var level = parseInt(tokens[idx].tag.slice(-1))
-  if (level === 1) level = '-subheadline lh-title mb2 mt0'
+  if (level === 1) level = '-subheadline-ns f1 word-wrap lh-title mb2 mt0'
 
   if (aIndex < 0) {
     tokens[idx].attrPush(['class', 'f' + level])
