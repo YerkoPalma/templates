@@ -1,24 +1,16 @@
-var Router = require('singleton-router')
+var choo = require('choo')
 var css = require('sheetify')
-var html = require('bel')
 
 css('tachyons')
 
-var router = Router()
+var app = choo()
 
-router.addRoute('/', mainView)
-router.notFound(notFoundView)
-router.setRoot('/')
-router.start()
-
-function mainView (params, state) {
-  return html`<main>
-    <h1>Hello world!</h1>
-  </main>`
+if (process.env.NODE_ENV !== 'production') {
+  app.use(require('choo-devtools')())
+} else {
+  app.use(require('choo-service-worker')())
 }
 
-function notFoundView (params, state) {
-  return html`<main>
-    <h1>ups! nothing here :(</h1>
-  </main>`
-}
+app.route('/', require('./views/main'))
+app.route('/*', require('./views/404'))
+app.mount('body')

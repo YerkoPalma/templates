@@ -3,21 +3,6 @@
 __dirname=$(dirname "$(readlink -f "$0")")
 . "$(readlink -f "$__dirname/../shared.sh")"
 
-parse_keywords () {
-  keywords="$1"
-  keywords="$(echo "$keywords" | sed 's/,/ /g' | sed 's/  / /g' | tr ' ' '\n')"
-  str=""
-  for f in $keywords; do
-    str="$str\"$f\","
-  done
-
-  keywords="$str"
-  keywords="$(echo "$keywords" | sed '$ s/,$//' | sed 's/,/, /' | tr ' ' '\n')"
-  keywords="$(printf '[\n%s\n]\n' "$keywords")"
-  keywords="$(printf '{\nkeywords: %s\n}' "$keywords")"
-  echo "$keywords"
-}
-
 # define PROJECTNAME
 if [ -z "$1" ]; then
   printf 'What is the name of the project?\n❯ '
@@ -58,39 +43,52 @@ fi
 savior base "$PROJECTNAME" "$DESCRIPTION" "$USERNAME"
 cd "$PROJECTNAME" || exit 1
 
-# define KEYWORDS
-if [ -z "$4" ]; then
-  printf 'What keywords should we include?\n❯ '
-  read -r KEYWORDS
-else
-  KEYWORDS="$4"
-fi
-keywords="$(parse_keywords "$KEYWORDS")"
-
+# index.js
 readf "$__dirname/index.js" > index.js
 
+# sw.js
+readf "$__dirname/sw.js" > sw.js
+
+# package.json
 readf "$__dirname/package.json" \
   | replace 'PROJECTNAME' "$PROJECTNAME" \
   | replace 'DESCRIPTION' "$DESCRIPTION" \
   | replace 'USERNAME' "$USERNAME" \
   > package.json
 
-pkg="$(cat package.json)"
-pkg="$(echo "$pkg" | jq ". + $keywords")"
-echo "$pkg" > package.json
+# manifes.json
+readf "$__dirname/manifest.json" \
+  | replace 'PROJECTNAME' "$PROJECTNAME" \
+  | replace 'DESCRIPTION' "$DESCRIPTION" \
+  | replace 'USERNAME' "$USERNAME" \
+  > manifest.json
+
+# index.html
+readf "$__dirname/index.html" \
+  | replace 'PROJECTNAME' "$PROJECTNAME" \
+  | replace 'DESCRIPTION' "$DESCRIPTION" \
+  | replace 'USERNAME' "$USERNAME" \
+  > index.html
+
+#views folder
+cp -R "$__dirname/views" views
 
 npm install -S \
-  bel \
-  singleton-router \
+  choo \
+  choo-service-worker \
   tachyons \
   sheetify
 
 npm install -D \
   standard \
   snazzy \
-  uglifyify \
-  uglifyjs \
-  bankai
+  budo \
+  choo-devtools \
+  browserify \
+  tinyify \
+  css-extract \
+  purify-css \
+  gh-pages
 
 git add .
 git commit -m "init"

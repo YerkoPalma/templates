@@ -10,8 +10,13 @@
   ],
   "scripts": {
     "test": "standard --verbose | snazzy",
-    "start": "bankai index.js -A 0.0.0.0 -p 8080 -a .",
-    "build": "NODE_ENV=production bankai build --optimize dist/"
+    "start": "budo index.js:bundle.js -H 0.0.0.0 -p 8080 -- -t sheetify -p [ css-extract -o bundle.css ]",
+    "build": "npm run build:static && npm run build:sw && npm run build:js && npm run build:css",
+    "build:static": "mkdir -p dist && cp index.html manifest.json dist",
+    "build:js": "browserify -p tinyify -t sheetify -p [ css-extract -o bundle.css ] -e index.js -o dist/bundle.js",
+    "build:css": "purifycss bundle.css dist/bundle.js --min --out dist/bundle.css && rm bundle.css",
+    "build:sw": "browserify -p tinyify -e sw.js -o dist/sw.js",
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "repository": "{{USERNAME}}/{{PROJECTNAME}}",
   "license": "MIT"
