@@ -76,6 +76,9 @@ cp -R "$__dirname/views" views
 # components folder
 cp -R "$__dirname/components" components
 
+# assets folder
+cp -R "$__dirname/assets" assets
+
 npm install -S \
   choo \
   choo-service-worker \
