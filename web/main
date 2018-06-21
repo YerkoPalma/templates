@@ -70,8 +70,11 @@ readf "$__dirname/index.html" \
   | replace 'USERNAME' "$USERNAME" \
   > index.html
 
-#views folder
+# views folder
 cp -R "$__dirname/views" views
+
+# components folder
+cp -R "$__dirname/components" components
 
 npm install -S \
   choo \
