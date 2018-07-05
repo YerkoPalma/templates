@@ -49,6 +49,9 @@ readf "$__dirname/index.js" > index.js
 # sw.js
 readf "$__dirname/sw.js" > sw.js
 
+# favicon.ico
+readf "$__dirname/favicon.ico" > favicon.ico
+
 # package.json
 readf "$__dirname/package.json" \
   | replace 'PROJECTNAME' "$PROJECTNAME" \
@@ -92,6 +95,7 @@ npm install -D \
   choo-devtools \
   browserify \
   tinyify \
+  brfs \
   css-extract \
   gh-pages
 
