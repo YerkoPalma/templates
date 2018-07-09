@@ -1,5 +1,22 @@
 /* global fetch */
-var md = require('../lib/md')
+var MarkdownIt = require('markdown-it')
+var Highlight = require('highlight-syntax')
+var highlight = Highlight([ require('highlight-syntax/js') ])
+var md = MarkdownIt('default', {
+  html: true,
+  highlight: function (str, lang) {
+    if (lang) {
+      try {
+        return highlight(str, { lang: lang })
+      } catch (__) {}
+    }
+
+    return ''
+  }
+})
+
+md.use(require('markdown-it-meta'))
+md.use(require('markdown-it-emoji'))
 
 module.exports = store
 
@@ -28,7 +45,6 @@ function store (state, emitter) {
       }
     })
     // also add support for mobile handlers
-    // use once because we are binding events here
     emitter.on('tap', () => emitter.emit(events.NEXT))
     emitter.on('doubletap', () => emitter.emit(events.PREV))
     emitter.on('hold', () => emitter.emit(events.SPEAK))
@@ -52,15 +68,14 @@ function store (state, emitter) {
     emitter.emit('tts:speak', audio)
   })
   emitter.on(events.LOAD, function (slide) {
-    fetch('../assets/slides/' + slide)
+    fetch('../content/' + slide)
       .then(response => response.text())
       .then(text => {
-        var renderer = md(text)
-        state.slides.content = renderer.render
-        state.slides.title = renderer.meta.title
-        state.slides.next = renderer.meta.next
-        state.slides.prev = renderer.meta.prev
-        state.slides.speech = renderer.meta.speech
+        state.slides.content = md.render(text)
+        state.slides.title = md.meta.title
+        state.slides.next = md.meta.next
+        state.slides.prev = md.meta.prev
+        state.slides.speech = md.meta.speech
         emitter.emit('render')
       })
   })
