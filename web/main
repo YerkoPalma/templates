@@ -6,6 +6,3 @@ then
 fi
 
 "$__dirname/base" "$@"
-
-git add .
-git commit -m "init"
