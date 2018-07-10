@@ -76,6 +76,7 @@ function store (state, emitter) {
         state.slides.next = md.meta.next
         state.slides.prev = md.meta.prev
         state.slides.speech = md.meta.speech
+        emitter.emit(state.events.DOMTITLECHANGE, state.slides.title)
         emitter.emit('render')
       })
   })
