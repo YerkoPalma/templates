@@ -97,4 +97,6 @@ npm install -D \
   tinyify \
   brfs \
   css-extract \
-  gh-pages
+  gh-pages \
+  choo-scaffold \
+  dependency-check
