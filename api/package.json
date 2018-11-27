@@ -1,0 +1,17 @@
+{
+  "name": "{{PROJECTNAME}}",
+  "description": "{{DESCRIPTION}}",
+  "author": "{{USERNAME}}",
+  "version": "0.1.0",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "test": "standard --verbose | snazzy && tape test.js | tap-summary",
+    "dev": "micro-dev . -p 8080",
+    "start": "micro -l tcp://0.0.0.0:${PORT-8080}"
+  },
+  "repository": "{{USERNAME}}/{{PROJECTNAME}}",
+  "license": "MIT"
+}
