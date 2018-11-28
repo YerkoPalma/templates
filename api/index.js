@@ -1,11 +1,7 @@
-const { send } = require('micro')
-const { router, get } = require('micro-fork')
-
-const getUsers = (req, res) => send(res, 200, {
-  name: 'John',
-  mail: 'john@doe.io'
-})
+const { router, get, post } = require('micro-fork')
+const { getUsers, createUsers } = require('./routes/user')
 
 module.exports = router()(
-  get('/user', getUsers)
+  get('/user', getUsers),
+  post('/user', createUsers)
 )

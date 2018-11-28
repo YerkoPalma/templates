@@ -11,15 +11,32 @@ test('setup', t => {
   t.end()
 })
 
+test('POST /user', async t => {
+  t.plan(1)
+  try {
+    const response = await axios.post('/user', {
+      name: 'John',
+      mail: 'john@doe.io'
+    })
+    // should use fixtures for bigger apps
+    t.deepEqual(response.data, [{
+      name: 'John',
+      mail: 'john@doe.io'
+    }])
+  } catch (error) {
+    t.fail(error)
+  }
+})
+
 test('GET /user', async t => {
   t.plan(1)
   try {
     const response = await axios.get('/user')
     // should use fixtures for bigger apps
-    t.deepEqual(response.data, {
+    t.deepEqual(response.data, [{
       name: 'John',
       mail: 'john@doe.io'
-    })
+    }])
   } catch (error) {
     t.fail(error)
   }

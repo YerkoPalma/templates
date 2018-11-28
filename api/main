@@ -80,6 +80,9 @@ pkg="$(cat package.json)"
 pkg="$(echo "$pkg" | jq ". + $keywords")"
 echo "$pkg" > package.json
 
+# views folder
+cp -R "$__dirname/routes" routes
+
 npm install -D \
   standard \
   snazzy \
