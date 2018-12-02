@@ -1,16 +1,9 @@
-var choo = require('choo')
-var css = require('sheetify')
+/* global navigator customElements */
+import AppShell from './components/app-shell.js'
 
-css('tachyons')
+// register components
+customElements.define('app-shell', AppShell)
 
-var app = choo()
-
-if (process.env.NODE_ENV !== 'production') {
-  app.use(require('choo-devtools')())
-} else {
-  app.use(require('choo-service-worker')())
-}
-
-app.route('/', require('./views/main'))
-app.route('/*', require('./views/404'))
-app.mount('body')
+// Register service worker
+navigator.serviceWorker
+  .register('service-worker.js', { updateViaCache: 'none' })
