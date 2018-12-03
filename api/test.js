@@ -11,10 +11,10 @@ test('setup', t => {
   t.end()
 })
 
-test('POST /user', async t => {
+test('POST /api/user', async t => {
   t.plan(1)
   try {
-    const response = await axios.post('/user', {
+    const response = await axios.post('/api/user', {
       name: 'John',
       mail: 'john@doe.io'
     })
@@ -28,10 +28,10 @@ test('POST /user', async t => {
   }
 })
 
-test('GET /user', async t => {
+test('GET /api/user', async t => {
   t.plan(1)
   try {
-    const response = await axios.get('/user')
+    const response = await axios.get('/api/user')
     // should use fixtures for bigger apps
     t.deepEqual(response.data, [{
       name: 'John',
