@@ -112,3 +112,8 @@ rm -f app/readme.md
 ## dependencies
 npm install
 npm install -S serve-handler
+
+# git
+git init 
+git add .
+git commit -m "init"
