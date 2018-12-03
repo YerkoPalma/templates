@@ -1,4 +1,0 @@
-DB=./db
-ENV=development
-PORT=8080
-DEBUG=restful,level-rest

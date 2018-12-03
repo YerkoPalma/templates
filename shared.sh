@@ -7,6 +7,10 @@ replace () {
   sed "s/{{$1}}/$2/g"
 }
 
+replace_2 () {
+  sed "s/$1/$2/g"
+}
+
 copy () {
   infile="$1"
   outfile="$2"

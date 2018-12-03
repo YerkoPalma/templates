@@ -54,10 +54,6 @@ else
   USERNAME="$3"
 fi
 
-# create base project
-savior base "$PROJECTNAME" "$DESCRIPTION" "$USERNAME"
-cd "$PROJECTNAME" || exit 1
-
 # define KEYWORDS
 if [ -z "$4" ]; then
   printf 'What keywords should we include?\n❯ '
@@ -67,51 +63,52 @@ else
 fi
 keywords="$(parse_keywords "$KEYWORDS")"
 
-mkdir -p "./public"
-mkdir -p "./src"
-mkdir -p "./api"
-mkdir -p "./tests"
-copy "$__dirname/_gitignore" ".gitignore"
-copy "$__dirname/_env" ".env"
-copy "$__dirname/_travis.yml" ".travis.yml"
-cp -r "$__dirname/src" "."
-cp -r "$__dirname/api" "."
-cp -r "$__dirname/tests" "."
 
+# create base project
+mkdir -p "$PROJECTNAME"
+cd "$PROJECTNAME" || exit 1
+savior api api "$DESCRIPTION" "$USERNAME" "$KEYWORDS"
+savior web app "$DESCRIPTION" "$USERNAME" "$KEYWORDS"
+
+# copy files
+copy "$__dirname/_gitignore" ".gitignore"
+copy "$__dirname/_travis.yml" ".travis.yml"
 readf "$__dirname/index.js" > index.js
 
-readf "$__dirname/package.json" \
-  | replace 'PROJECTNAME' "$PROJECTNAME" \
-  | replace 'DESCRIPTION' "$DESCRIPTION" \
-  | replace 'USERNAME' "$USERNAME" \
-  > package.json
+## api
+## remove git
+rm -rf api/.git
+rm -f api/.gitignore
+## remove node_modules
+rm -rf api/node_modules
+## remove package-lock
+rm -f api/package-lock.json
+## remove license
+rm -f api/license
+## remove readme
+rm -f api/readme.md
 
-pkg="$(cat package.json)"
-pkg="$(echo "$pkg" | jq ". + $keywords")"
-echo "$pkg" > package.json
+## move package
+mv api/package.json package.json
+## move test
+mkdir -p test/api
+readf "api/test.js" \
+  | replace_2 "const app = require('.')" "const app = require('..\/..\/index.js')" \
+  > "test/api/test.js"
+rm -f api/test.js
 
-npm install -S \
-  bel \
-  bankai \
-  level \
-  level-rest-parser \
-  rest-parser \
-  merry \
-  nanomorph \
-  nanostack \
-  redux \
-  singleton-router \
-  tachyons \
-  cookie-cutter \
-  sheetify
+## new index
+readf "$__dirname/api/index.js" > "api/index.js"
 
-npm install -D \
-  standard \
-  snazzy \
-  envify \
-  memdb \
-  tape \
-  tap-summary
+## app
+## remove git
+rm -rf app/.git
+rm -f app/.gitignore
+## remove license
+rm -f app/license
+## remove readme
+rm -f app/readme.md
 
-git add .
-git commit -m "init"
+## dependencies
+npm install
+npm install -S serve-handler

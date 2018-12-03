@@ -4,9 +4,10 @@
   "description": "{{DESCRIPTION}}",
   "main": "index.js",
   "scripts": {
-    "test": "standard --verbose | snazzy && ENV=test tape 'tests/**/*.js' | tap-summary",
-    "start": "node index.js",
-    "build": "ENV=production bankai build --verbose --assets=assets --js [ --transform envify ] src/index.js public/"
+    "start": "micro -l tcp://0.0.0.0:${PORT-8080}",
+    "dev": "micro-dev . -p 8080",
+    "test": "standard --verbose | snazzy && tape test/api/test.js | tap-summary",
+    "lint": "standard --fix"
   },
   "author": "{{USERNAME}}",
   "repository": "{{USERNAME}}/{{PROJECTNAME}}",
