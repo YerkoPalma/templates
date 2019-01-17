@@ -6,7 +6,7 @@
   "scripts": {
     "start": "micro -l tcp://0.0.0.0:${PORT-8080}",
     "dev": "micro-dev . -p 8080",
-    "test": "standard --verbose | snazzy && tape test/api/test.js | tap-summary",
+    "test": "standard --verbose | snazzy && tape test/**/*.js | tap-summary",
     "lint": "standard --fix"
   },
   "author": "{{USERNAME}}",

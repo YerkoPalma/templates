@@ -89,7 +89,18 @@ rm -f api/license
 rm -f api/readme.md
 
 ## move package
-mv api/package.json package.json
+readf "$__dirname/package.json" \
+  | replace 'PROJECTNAME' "$PROJECTNAME" \
+  | replace 'DESCRIPTION' "$DESCRIPTION" \
+  | replace 'USERNAME' "$USERNAME" \
+  > package.json
+# merge dependencies
+dev_dep="$(cat api/package.json | jq ". | {devDependencies: .devDependencies}")"
+dep="$(cat api/package.json | jq ". | {dependencies: .dependencies}")"
+pkg="$(cat package.json | jq ". + $dev_dep + $dep")"
+echo "$pkg" > package.json
+rm api/package.json
+
 ## move test
 mkdir -p test/api
 readf "api/test.js" \
