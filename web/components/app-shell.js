@@ -1,29 +1,58 @@
-/* global HTMLElement fetch */
+/* global fetch */
 import markdown from 'https://unpkg.com/md?module'
+import { LitElement, html } from 'https://unpkg.com/@polymer/lit-element?module'
 
-export default class Clock extends HTMLElement {
-  get controller () {
-    return this.getAttribute('controller')
+export default class AppShell extends LitElement {
+  static get properties () {
+    return {
+      controller: {
+        type: String
+      },
+      default: {
+        type: String
+      },
+      current: {
+        type: Object
+      }
+    }
   }
-  set controller (value) {
-    this.setAttribute('controller', value)
+  firstUpdated (changedProperties) {
+    for (let key of changedProperties.keys()) {
+      if (key === 'default') {
+        if (this.default) {
+          this.fetchTemplate(this.default).then(result => { this.current = result })
+        } else {
+          this.current = html`<div></div>`
+        }
+      }
+    }
   }
-  get default () {
-    return this.getAttribute('default')
+  updated (changedProperties) {
+    for (let key of changedProperties.keys()) {
+      if (key === 'controller') {
+        let controllerElement = document.querySelector(this.controller)
+        const links = Array.from(controllerElement.querySelectorAll('a[href]'))
+        links.forEach(link => {
+          link.addEventListener('click', async e => {
+            e.preventDefault()
+            const target = e.target.href
+            this.current = await this.fetchTemplate(target)
+            window.history.pushState({}, null, target)
+          })
+        })
+      }
+    }
   }
-  set default (value) {
-    this.setAttribute('default', value)
+  render () {
+    return this.current
   }
-  constructor () {
-    super()
-    this.attachShadow({mode: 'open'})
-  }
-  connectedCallback () {
-    const controller = document.querySelector(this.controller)
-    const links = Array.from(controller.querySelectorAll('a[href]'))
-    const template = document.createElement('template')
+  async fetchTemplate (template) {
+    const NOT_FOUND_URL = 'content/404.html'
+    let response
+    let result
+    const isMarkdown = template.split('.').pop() === 'md'
     const mdTemplate = md => {
-      return `<style>
+      return html`<style>
         :host {
           font-family: sans-serif;
         }
@@ -32,33 +61,23 @@ export default class Clock extends HTMLElement {
         }
       </style>
       <div>
-        ${md}
+        ${html([markdown(md)])}
       </div>
       `
     }
-    links.forEach(link => {
-      link.addEventListener('click', async e => {
-        e.preventDefault()
-        const target = e.target.href
-        const NOT_FOUND_URL = 'content/404.html'
-        let html
-        let response
-        try {
-          response = await fetch(target)
-          if (response && response.ok) {
-            html = await response.text()
-          } else {
-            response = await fetch(NOT_FOUND_URL)
-            html = await response.text()
-          }
-        } catch (ex) {
-          response = await fetch(NOT_FOUND_URL)
-          html = await response.text()
-        }
-        template.innerHTML = target.split('.').pop() === 'md' ?mdTemplate(markdown(html)) : html
-        this.shadowRoot.innerHTML = ''
-        this.shadowRoot.appendChild(template.content.cloneNode(true))
-      })
-    })
+    try {
+      response = await fetch(template)
+      if (response && response.ok) {
+        result = await response.text()
+      } else {
+        response = await fetch(NOT_FOUND_URL)
+        result = await response.text()
+      }
+    } catch (err) {
+      console.log(err)
+      response = await fetch(NOT_FOUND_URL)
+      result = await response.text()
+    }
+    return isMarkdown ? mdTemplate(result) : html([result])
   }
 }

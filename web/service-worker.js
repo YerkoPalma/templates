@@ -79,29 +79,31 @@ self.addEventListener('fetch', event => {
       const request = await cache.match(event.request)
       if (request && request.ok) return request
       else if (request && request.status === 404) return caches.match(NOT_FOUND_URL)
-      else return fetch(event.request)
-        .then(response => {
-          if (response.ok) {
+      else {
+        return fetch(event.request)
+          .then(response => {
+            if (response.ok) {
             // if we have to fetch this request, also add it to the cache
             // but only for known files (markdown and components)
-            if (/[.md$|.html$]/.test(event.request.url)) cache.put(event.request, response.clone())
-            return response
-          } else {
-            const { url } = event.request
-            console.log(`Fetch of ${url} failed, returning offline page.`)
-            return caches.match(NOT_FOUND_URL)
-          }
-        })
-        .catch(error => {
+              if (/[.md$|.html$]/.test(event.request.url)) cache.put(event.request, response.clone())
+              return response
+            } else {
+              const { url } = event.request
+              console.log(`Fetch of ${url} failed, returning offline page.`)
+              return caches.match(NOT_FOUND_URL)
+            }
+          })
+          .catch(error => {
           // The catch is only triggered if fetch() throws an exception, which will
           // most likely happen due to the server being unreachable. If fetch() returns
           // a valid HTTP response with an response code in the 4xx or 5xx range, the
           // catch() will NOT be called.
-          const { url } = event.request
-          console.log(`Fetch of ${url} failed, returning offline page.`, error)
-          return caches.match(NOT_FOUND_URL)
-        })
-      })()
+            const { url } = event.request
+            console.log(`Fetch of ${url} failed, returning offline page.`, error)
+            return caches.match(NOT_FOUND_URL)
+          })
+      }
+    })()
     )
   }
 
