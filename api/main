@@ -89,12 +89,12 @@ npm install -D \
   tape \
   micro-dev \
   test-listen \
-  tap-summary
+  tap-summary \
+  axios
 
 npm install -S \
   micro \
-  micro-fork \
-  axios
+  micro-fork
 
 git add .
 git commit -m "init"
