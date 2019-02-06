@@ -70,7 +70,7 @@ keywords="$(parse_keywords "$KEYWORDS")"
 # index.js file
 readf "$__dirname/index.js" > index.js
 # favicon file
-readf "$__dirname/favicon.ico.js" > favicon.ico
+readf "$__dirname/favicon.ico" > favicon.ico
 # index.html file
 readf "$__dirname/index.html" > index.html
 # manifest file
